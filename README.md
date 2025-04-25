@@ -2,7 +2,9 @@ Machines API demo.
 
 # Step 0 - Setup
 
-* Verify that you have `curl` and `flyctl` installed, and can log into your fly.io account.
+These instructions should work on Linux, MacOS, and Windows WSL2.
+
+* Verify that you have [`curl`](https://curl.se/docs/install.html) and ['flyctl'](https://fly.io/docs/flyctl/install/) installed, and can [log into](https://fly.io/docs/flyctl/auth-login/) your fly.io account.
 
 * Create an app
 
@@ -85,7 +87,7 @@ Once again, visit your application by running the following command:
 fly apps open --app $APPNAME
 ```
 
-You may find the `fly machine run` command more convenient for casual experimentation and/or scripting.
+You may find the `fly machine run` command to be useful for casual experimentation and/or scripting.
 
 When done, delete your machine using the command in the setup section.
 
