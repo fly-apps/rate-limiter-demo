@@ -33,7 +33,13 @@ Machines API demo.
 
 In this demo we are going to run the pre-canned `echo-server` from the previous step on a fly.io Machine.  Without modifying that server, we are going to also run [nginx](https://nginx.org/) configured to be a [rate limiter](https://blog.nginx.org/blog/rate-limiting-nginx).  We are going to configure our guest machine, and set up our HTTP services.
 
-The JSON we will be sending is contained in [api-config.json](./api-config.json).  Note the `raw_value` contained in that file. It is the base 64 encoded contents of [nginx.conf](./nginx.conf).  You can produce this value yourself by running:
+The JSON we will be sending is contained in [api-config.json](./api-config.json). It contains the definition of a [machine](https://machines-api-spec.fly.dev/#model/machine).
+We will be focusing mostly on the definition of a [container](https://machines-api-spec.fly.dev/#model/flycontainerconfig).
+
+We see two containers defined: _nginx_ and _echo_. _nginx_ depends on _echo_, and _echo_ has a health check defined that will determine whether or not the container is ready to
+accept requests. This is important to prevent requests being routed to the new Machine once it is started (or restarted) until it is ready to accept requests.
+
+Note the `raw_value` contained in that file. It is the base 64 encoded contents of [nginx.conf](./nginx.conf).  You can produce this value yourself by running:
 
 ```
 base64 -i nginx.conf
@@ -62,11 +68,11 @@ When done, delete your machine using the command in the setup section.  Again, r
 
 # Demo 2(A) - `fly machine run` with precanned app
 
-This time JSON configuration is a bit simplerL [cli-config.json](./cli-config.json). That's because we can load the contents of the `nginix.conf` file directly and we configure our guest machine and services from the command line:
+This time JSON configuration is a bit simpler: [cli-config.json](./cli-config.json). That's because we can load the contents of the `nginix.conf` file directly and we configure our guest machine and services from the command line:
 
 ```
 flyctl machine run --machine-config cli-config.json \
-   --app $APPNAME --autostart=true --autostop=stop \
+  --app $APPNAME --autostart=true --autostop=stop \
   --port 80:8080/tcp:http --port 443:8080/tcp:http:tls \
   --vm-cpu-kind shared --vm-cpus 1 --vm-memory 256
 ```
@@ -90,6 +96,8 @@ flyctl machine run --machine-config cli-config.json \
   --port 80:8080/tcp:http --port 443:8080/tcp:http:tls \
   --vm-cpu-kind shared --vm-cpus 1 --vm-memory 256
 ```
+
+The additional parameters are `--dockerfile` and `--container`. The Dockerfile is used to build an image which is pushed to a repository, and this image replaces the image defined in the echo container.
 
 When done, you can delete everything running the following command:
 
