@@ -66,6 +66,13 @@ fly apps open --app $APPNAME
 
 Again, you will see JSON. Press refresh again rapidly and you will quickly see "503 Service Temporarily Unavailable". Congratuations, you have successfully run both the echo app and nginx configured as a rate limiter on a Fly.io machine.
 
+You can ssh into either container using `fly ssh console`:
+
+```
+fly ssh console --container nginx
+fly ssh console --container echo
+```
+
 This demo used `curl`. Any application written in any language that can send HTTP POST requests can be used instead.
 
 When done, delete your machine using the command in the setup section.
