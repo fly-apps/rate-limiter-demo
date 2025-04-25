@@ -64,7 +64,9 @@ fly apps open --app $APPNAME
 
 Again, you will see JSON. Press refresh again rapidly and you will quickly see "503 Service Temporarily Unavailable". Congratuations, you have successfully run both the echo app and nginx configured as a rate limiter on a Fly.io machine.
 
-When done, delete your machine using the command in the setup section.  Again, repeat this after ever step.
+This demo used `curl`. Any application written in any language that can send HTTP POST requests can be used instead.
+
+When done, delete your machine using the command in the setup section.
 
 # Demo 2(A) - `fly machine run` with precanned app
 
@@ -82,6 +84,10 @@ Once again, visit your application by running the following command:
 ```
 fly apps open --app $APPNAME
 ```
+
+You may find the `fly machine run` command more convenient for casual experimentation and/or scripting.
+
+When done, delete your machine using the command in the setup section.
 
 # Demo 2(B) - `fly machine run` with custom app
 
