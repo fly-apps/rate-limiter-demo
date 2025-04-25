@@ -1,0 +1,18 @@
+{
+  "containers": [
+    {
+      "name": "nginx",
+      "image": "nginx:latest",
+      "files": [
+        {
+          "guest_path": "/etc/nginx/conf.d/default.conf",
+          "local_path": "nginx.conf"
+        }
+      ]
+    },
+    {
+      "name": "echo",
+      "image": "ealen/echo-server"
+    }
+  ]
+}
