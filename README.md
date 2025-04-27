@@ -25,7 +25,7 @@ These instructions should work on Linux, MacOS, and Windows WSL2.
     export FLY_API_HOSTNAME=https://api.machines.dev
     ```
 
-* Destroy all machines in the app.  There won't be any at this point, but you will want to run this between every step after the first one:
+* Destroy all machines in the app.  There won't be any at this point, but you will want to run this between every step:
 
   ```
   fly machines list --app $APPNAME -q | xargs -n 1 fly machine destroy -f --app $APPNAME
@@ -120,7 +120,15 @@ flyctl machine run --machine-config cli-config.json \
   --vm-cpu-kind shared --vm-cpus 1 --vm-memory 256
 ```
 
-The additional parameters are `--dockerfile` and `--container`. The Dockerfile is used to build an image which is pushed to a repository, and this image replaces the image defined in the echo container.
+The additional parameters are `--dockerfile` and `--container`. The Dockerfile is used to build an image which is pushed to a repository, and this image replaces the image defined in the echo container.  The
+default for container is to look for a container named "app" first, and if not found use the first one.
+
+Note that while we have been destroying machines and running new ones, we could instead opt to update
+and existing one:
+
+```
+fly machine list -q | xargs fly machine update --yes --dockerfile Dockerfile --container echo
+```
 
 When done, you can delete everything running the following command:
 
@@ -146,7 +154,7 @@ machine_config = 'cli-config.json'
 container = 'echo'
 ```
 
-Normally you will not need to specify the container as `fly deploy` will first look for a container named `app`, and if none are found it will select the first app.  In this case we want the image we build to replace the definition of the second app, named `echo`.
+Once again, you will not normally need to specify the container as `fly deploy` will first look for a container named `app`, and if none are found it will select the first app.  In this case we want the image we build to replace the definition of the second app, named `echo`.
 
 We make one further change, we change the internal port to '8080' so that traffic will be routed to the http server:
 
@@ -158,6 +166,16 @@ Once this change is made, we run `fly deploy`.  If we visit the app now we can q
 
 `fly deploy` may be more convenient than `fly machine run` when you are starting out, and can update multiple identically
 configured machines with one command.
+
+In the above we are using a `cli-config.json` in a separate file.  You can also embed it directly into your `fly.toml` using triple quotes.  Just make sure that the first character in the string is `{`:
+
+```
+machine_config = '''[
+  "containers": [
+    …
+  ]
+]'''
+```
 
 While these demos progressed from using the machine API directly to `fly launch`, a more common progression is in the other
 direction - you start out simple and as your needs change and you want to take greater advantage of what Fly.io has to offer
