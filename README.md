@@ -1,12 +1,20 @@
 Machines API demo.
 
+The following will demonstrate running two containers on a single machine:
+a simple echo app and [nginx](https://nginx.org/) configured to be a [rate limiter](https://blog.nginx.org/blog/rate-limiting-nginx).  Nginx will require
+a configuration file and will depend on the echo app being healthy.  The echo app will have a health
+check defined: running [wget](https://www.gnu.org/software/wget/) to verify that the server is up.
+
+The demos below will show you how to do this with the machines API, fly machine run, and fly launch.
+And will demonstrate running an existing echo server as well as one that you provide.
+
 # Step 0 - Setup
 
 These instructions should work on Linux, MacOS, and Windows WSL2.
 
-* Verify that you have [`curl`](https://curl.se/docs/install.html) and ['flyctl'](https://fly.io/docs/flyctl/install/) installed, and can [log into](https://fly.io/docs/flyctl/auth-login/) your fly.io account.
+* Verify that you have [`curl`](https://curl.se/docs/install.html) and [`flyctl`](https://fly.io/docs/flyctl/install/) installed, and can [log into](https://fly.io/docs/flyctl/auth-login/) your fly.io account.
 
-* Create an app
+* Create an app, a shared IPv4 address, a dedicated IPv6 address, a token, and set the fly API hostname.
 
     ```
     export APPNAME=demo-$(uuidgen | cut -d '-' -f 5 | tr A-Z a-z)
@@ -23,7 +31,7 @@ These instructions should work on Linux, MacOS, and Windows WSL2.
   fly machines list --app $APPNAME -q | xargs -n 1 fly machine destroy -f --app $APPNAME
   ```
 
-* Optional, but recommended, try running the following command (required Docker to be installed):
+* Optional, but recommended, try running the [ealen/echo-server](https://hub.docker.com/r/ealen/echo-server) on your own machine using Docker (if you don't already have Docker installed, you can find the instructions [here](https://www.docker.com/get-started/)):
 
     ```
     docker run -p 8080:80 ealen/echo-server
@@ -122,7 +130,35 @@ fly apps destroy $APPNAME
 
 # Demo 3 - `fly launch`
 
-This is not implemented yet, but the idea is that you can run
-`fly launch` to launch your application, add the contents of [cli-config.json](./cli-config.json) into your `fly.toml`, run `fly deploy` and you are up and running.  No need to create an app, allocate ip addresses, create a token, etc.
+In this demo we are going to launch our bun server as a new application, then we will add the rate limiter.  To make it easier to trigger the
+rate limiter later, we are going to opt out of running in a high availability configuration:
 
-This is very similar to the approach taken in [deploy support for machine configs with containers #4289](https://github.com/superfly/flyctl/pull/4289).
+```sh
+fly launch --ha=false
+```
+
+At this point, we have a `fly.toml` that configures a `http_service` and our `vm`.  We can visit the app, but at this point there is no rate limiters.
+
+We can add our desired machine configuration to the `fly.toml` by adding the following two lines above the `[build]` section:
+
+```toml
+machine_config = 'cli-config.json'
+container = 'echo'
+```
+
+Normally you will not need to specify the container as `fly deploy` will first look for a container named `app`, and if none are found it will select the first app.  In this case we want the image we build to replace the definition of the second app, named `echo`.
+
+We make one further change, we change the internal port to '8080' so that traffic will be routed to the http server:
+
+```toml
+  internal_port = 8080
+```
+
+Once this change is made, we run `fly deploy`.  If we visit the app now we can quickly trigger the "503 Service Temporarily Unavailable" available message.
+
+`fly deploy` may be more convenient than `fly machine run` when you are starting out, and can update multiple identically
+configured machines with one command.
+
+While these demos progressed from using the machine API directly to `fly launch`, a more common progression is in the other
+direction - you start out simple and as your needs change and you want to take greater advantage of what Fly.io has to offer
+you take advantage of the interface that is most suited to your needs.
