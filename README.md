@@ -43,7 +43,7 @@ These instructions should work on Linux, MacOS, and Windows WSL2.
 
 In this demo we are going to run the pre-canned `echo-server` from the previous step on a fly.io Machine.  Without modifying that server, we are going to also run [nginx](https://nginx.org/) configured to be a [rate limiter](https://blog.nginx.org/blog/rate-limiting-nginx).  We are going to configure our guest machine, and set up our HTTP services.
 
-The JSON we will be sending is contained in [api-config.json](./api-config.json). It contains the definition of a [machine](https://machines-api-spec.fly.dev/#model/machine).
+The JSON we will be sending is contained in [api-config.json](./api-config.json). It contains the definition of a [machine](https://machines-api-spec.fly.dev/#model/flymachineconfig).
 We will be focusing mostly on the definition of a [container](https://machines-api-spec.fly.dev/#model/flycontainerconfig).
 
 We see two containers defined: _nginx_ and _echo_. _nginx_ depends on _echo_, and _echo_ has a health check defined that will determine whether or not the container is ready to
