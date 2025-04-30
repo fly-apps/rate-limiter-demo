@@ -1,4 +1,4 @@
-Machines API demo.
+# Container Demo
 
 The following will demonstrate running two containers on a single machine:
 a simple echo app and [nginx](https://nginx.org/) configured to be a [rate limiter](https://blog.nginx.org/blog/rate-limiting-nginx).  Nginx will require
@@ -8,16 +8,16 @@ check defined: running [wget](https://www.gnu.org/software/wget/) to verify that
 The demos below will show you how to do this with the machines API, fly machine run, and fly launch.
 And will demonstrate running an existing echo server as well as one that you provide.
 
-# Step 0 - Setup
+## Step 0 - Setup
 
 These instructions should work on Linux, MacOS, and Windows WSL2.
 
 * Verify that you have [`curl`](https://curl.se/docs/install.html) and [`flyctl`](https://fly.io/docs/flyctl/install/) installed, and can [log into](https://fly.io/docs/flyctl/auth-login/) your fly.io account.
 
-* Create an app, a shared IPv4 address, a dedicated IPv6 address, a token, and set the fly API hostname.
+* Create an app, a shared IPv4 address, a dedicated IPv6 address, a token, and set the [fly API hostname](https://fly.io/docs/machines/api/working-with-machines-api/#api-addresses).
 
     ```
-    export APPNAME=demo-$(uuidgen | cut -d '-' -f 5 | tr A-Z a-z)
+    export APPNAME=container-demo-$(uuidgen | cut -d '-' -f 5 | tr A-Z a-z)
     fly apps create --name $APPNAME
     fly ips allocate-v4 --shared --app $APPNAME
     fly ips allocate-v6 --app $APPNAME
@@ -39,7 +39,7 @@ These instructions should work on Linux, MacOS, and Windows WSL2.
 
     VIsit `http://localhost:8080/` in your browser.  You will see some JSON.
 
-# Demo 1 - Machine API
+## Demo 1 - Machine API
 
 In this demo we are going to run the pre-canned `echo-server` from the previous step on a fly.io Machine.  Without modifying that server, we are going to also run [nginx](https://nginx.org/) configured to be a [rate limiter](https://blog.nginx.org/blog/rate-limiting-nginx).  We are going to configure our guest machine, and set up our HTTP services.
 
@@ -85,7 +85,7 @@ This demo used `curl`. Any application written in any language that can send HTT
 
 When done, delete your machine using the command in the setup section.
 
-# Demo 2(A) - `fly machine run` with precanned app
+## Demo 2(A) - `fly machine run` with precanned app
 
 This time JSON configuration is a bit simpler: [cli-config.json](./cli-config.json). That's because we can load the contents of the `nginix.conf` file directly and we configure our guest machine and services from the command line:
 
@@ -106,7 +106,7 @@ You may find the `fly machine run` command to be useful for casual experimentati
 
 When done, delete your machine using the command in the setup section.
 
-# Demo 2(B) - `fly machine run` with custom app
+## Demo 2(B) - `fly machine run` with custom app
 
 You typically won't be running apps that are prepackaged as Docker images and published to Dockerhub.  To demonstrate running your own app, [server.js](./server.js) contains a small JavaScript application that performs a similar function. We also have a [Dockerfile](./Dockerfile) that runs this application.
 
@@ -136,7 +136,7 @@ When done, you can delete everything running the following command:
 fly apps destroy $APPNAME
 ```
 
-# Demo 3 - `fly launch`
+## Demo 3 - `fly launch`
 
 In this demo we are going to launch our bun server as a new application, then we will add the rate limiter.  To make it easier to trigger the
 rate limiter later, we are going to opt out of running in a high availability configuration:
