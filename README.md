@@ -5,7 +5,13 @@ a simple echo app and [nginx](https://nginx.org/) configured to be a [rate limit
 a configuration file and will depend on the echo app being healthy.  The echo app will have a health
 check defined: running [wget](https://www.gnu.org/software/wget/) to verify that the server is up.
 
-The demos below will show you how to do this with the machines API, fly machine run, and fly launch.
+Each container has at a minimum a `name`. This will enable you to select the container on commands like `fly ssh console`, and be used to express dependencies. In this demo the names used will be `nginx` and `echo`.
+
+Every container but one requires an `image`. This can be from places like Docker Hub, quay.io, or gcr.io. If you are using `fly machine run` or `fly deploy`, you can specify one container which will use the image that you build for your application.
+
+The image is a starting point. You can override any or all of the following: `cmd`, `env`, `exec`, `files`, `secrets`. or `user`. This demo will add an nginx configuration file to the [nginx base image on Docker Hub](https://hub.docker.com/_/nginx).
+
+The demos below will show you how to do all this with the machines API, `fly machine run`, and `fly launch`.
 And will demonstrate running an existing echo server as well as one that you provide.
 
 ## Step 0 - Setup
