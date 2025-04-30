@@ -170,11 +170,11 @@ configured machines with one command.
 In the above we are using a `cli-config.json` in a separate file.  You can also embed it directly into your `fly.toml` using triple quotes.  Just make sure that the first character in the string is `{`:
 
 ```
-machine_config = '''[
+machine_config = '''{
   "containers": [
     …
   ]
-]'''
+}'''
 ```
 
 While these demos progressed from using the machine API directly to `fly launch`, a more common progression is in the other
