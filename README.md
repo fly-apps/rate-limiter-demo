@@ -67,7 +67,7 @@ We can use [curl](https://curl.se/) to send the request:
 curl -i -X POST \
   -H "Authorization: Bearer ${FLY_API_TOKEN}" -H "Content-Type: application/json" \
   "${FLY_API_HOSTNAME}/v1/apps/${APPNAME}/machines" \
-  -d "$(cat api-config.json)"
+  -d @api-config.json
 ```
 
 ... and you are done!  That was quick.
