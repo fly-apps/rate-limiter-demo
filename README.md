@@ -130,7 +130,7 @@ The additional parameters are `--dockerfile` and `--container`. The Dockerfile i
 default for container is to look for a container named "app" first, and if not found use the first one.
 
 Note that while we have been destroying machines and running new ones, we could instead opt to update
-and existing one:
+an existing one:
 
 ```
 fly machine list -q | xargs fly machine update --yes --dockerfile Dockerfile --container echo
