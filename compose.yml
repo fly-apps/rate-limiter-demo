@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"  # Add this line
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      echo:
+        condition: service_healthy
+
+  echo:
+    image: ealen/echo-server
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
