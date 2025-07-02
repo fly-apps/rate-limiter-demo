@@ -14,4 +14,4 @@ services:
   echo:
     build: .
     healthcheck:
-      test: ["CMD", "wget", "-q0-", "localhost:80"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:80"]
