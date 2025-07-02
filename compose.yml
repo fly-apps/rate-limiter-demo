@@ -4,7 +4,7 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "80:80"  # Add this line
+      - "8080:8080"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
@@ -12,9 +12,6 @@ services:
         condition: service_healthy
 
   echo:
-    image: ealen/echo-server
+    build: .
     healthcheck:
-      test: ["CMD", "wget", "--spider", "localhost:80"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      test: ["CMD", "wget", "-q0-", "localhost:80"]
